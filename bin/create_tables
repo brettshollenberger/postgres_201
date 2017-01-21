@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+mkdir -p data
+curl https://s3-us-west-1.amazonaws.com/brett-egghead/window_functions/movies.csv > data/movies.csv
+curl https://s3-us-west-1.amazonaws.com/brett-egghead/window_functions/runners.csv > data/runners.csv
+curl https://gist.githubusercontent.com/brettshollenberger/08ad5cae9597d12a7ec552647d9210ae/raw/c4d9f94f9a89cd121fe4796e2bed31085a388e0a/create2.sql > create.sql
+# curl https://gist.githubusercontent.com/brettshollenberger/faebbddf5be011e3d59c764a69cc77ed/raw/8b4951195dafc88ec22920ba6d0460ae473451d3/create2.sql > create.sql
+
+dropdb   postgres_101
+createdb postgres_101
+
+if [[ ! -f insert.sql ]]; then
+  touch insert.sql
+
+  echo "COPY movies FROM '`pwd`/data/movies.csv' DELIMITER ',' CSV NULL 'NA' HEADER;" >> insert.sql
+  echo "COPY runners FROM '`pwd`/data/runners.csv' DELIMITER ',' CSV NULL '-' HEADER;" >> insert.sql
+fi;
+
+psql -d postgres_101 -f create.sql
+psql -d postgres_101 -f insert.sql
+
+rm -rf data && rm create.sql && rm insert.sql

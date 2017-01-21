@@ -1,0 +1,19 @@
+SELECT *
+FROM integers;
+
+SELECT DISTINCT(UNNEST(integers)) ints
+FROM integers
+ORDER BY 1;
+
+SELECT ARRAY[1,2,3];
+
+SELECT UNNEST(ARRAY[1,2,3]);
+
+WITH ints AS (
+   SELECT UNNEST(ARRAY[2,3,4]) AS int
+)
+SELECT *
+FROM ints
+WHERE int IN (
+   SELECT UNNEST(ARRAY[1,2,3])
+);
